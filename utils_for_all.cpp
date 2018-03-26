@@ -1,4 +1,5 @@
 #include <sstream>
+#include "utils_for_all.h"
 
 namespace utils
 {

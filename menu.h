@@ -9,19 +9,20 @@
 #include <vector>
 #include "menu_config.h"
 
-
-enum
+namespace value_type
 {
-   SWITCH = 0, //switch value to ON or OFF
-   DIGIT //for digital value
-#ifdef ARRAY_ON
-   , ARRAY //for array of string
-#endif ARRAY_ON
-#ifdef EXEC_ON
-   , EXEC //for exec functions from menu
-#endif EXEC_ON
-};
-
+   enum
+   {
+      SWITCH = 0, //switch value to ON or OFF
+      DIGIT //for digital value
+   #ifdef ARRAY_ON
+      , ARRAY //for array of string
+   #endif ARRAY_ON
+   #ifdef EXEC_ON
+      , EXEC //for exec functions from menu
+   #endif EXEC_ON
+   };
+}
 
 class CAction
 {
@@ -31,7 +32,6 @@ public:
    bool Up(bool up = true);
    bool Down();
    uint GetAction();
-   //~CAction();
 
 #ifdef EXEC_ON
    bool Exec();
@@ -66,7 +66,6 @@ public:
    bool Enter();
    bool Back();
    bool Flush(CMenu *menu);
-   ~CMenu();
 private:
 //methods
    bool addItem(const std::string Title, const uint Item, bool editable = false, CAction *action = nullptr);
