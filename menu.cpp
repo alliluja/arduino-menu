@@ -1,11 +1,10 @@
 // #include <LiquidCrystal.h>
 
 #include "menu.h"
-#include "utils_for_all.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
-using utils::to_string;
 using namespace value_type;
 /*TODO: 
 /добавить проверку на длину строк
@@ -17,6 +16,16 @@ using namespace value_type;
 /
 /
 */
+
+   template <typename T>
+   static std::string int_to_string(T val)
+   {
+      std::stringstream ss;
+      ss << val;
+      std::string str = ss.str();
+      return str;
+   }
+
 
    CAction::CAction(void *value, uint action, uint *iter)
    {
@@ -71,7 +80,7 @@ using namespace value_type;
 
          case DIGIT:
             {
-               result = /*"Value = " + */to_string((*_digit));
+               result = /*"Value = " + */int_to_string((*_digit));
                break;
             }
 #ifdef ARRAY_ON
@@ -106,7 +115,7 @@ using namespace value_type;
 
          case DIGIT:
             {
-               (*_digit) = isUP? (*_digit) + DIGIT_INCREMENT: (*_digit) - DIGIT_INCREMENT;
+               (*_digit) = isUP? (*_digit) + static_cast<float>(DIGIT_INCREMENT): (*_digit) - static_cast<float>(DIGIT_INCREMENT);
                break;
             }
 #ifdef ARRAY_ON

@@ -2,32 +2,53 @@
  ====== Configuration for CMenu class ======
 */
 
+#pragma once
+
 /*==============USING TYPES=================*/
 typedef unsigned short int uint;
 
 /*==============USING TYPES END=============*/
 
 
+
 /*=============GLOBAL VARIABLES=============*/
 #define DIGIT_INCREMENT 0.1                  //comment this
-   #ifndef DIGIT_INCREMENT
-      float DIGIT_INCREMENT = 0.1;           //and use &DIGIT_INCREMENT when create menu to modify this in menu
-   #endif
 
-#define LCD_STR_LENGTH 16                    //symbols in row
-#define LCD_NUM_ROWS   2                     //rows in display
+
+//#define ARDUINO                                   //to compile for arduino
+#ifdef ARDUINO
+#   define LCD_1602
+#      ifdef LCD_1602
+#         define LCD_STR_LENGTH 16                    //symbols in row
+#         define LCD_NUM_ROWS   2                     //rows in display
+#      endif
+
+#   define I2C_FLAG
+#      ifdef I2C_FLAG
+            //if LCD using I2C Protocol
+            #include <LiquidCrystal_I2C.h> ///??????
+#      else
+            //else using 4bit wire??
+            #include <LiquidCrystal.h>
+#      endif
+#else                                        //compile for windows (for example)
+
+#endif
+
 #define ON             "ON"                  //string, to show status of bool value - true
 #define OFF            "OFF"                 //string, to show status of bool value - false
 /*=============GLOBAL VARIABLES END=========*/
 
-/*=============CODE OPTIMIZATION============*/
-#define ARRAY_ON                            //to use string array in menu, comment if don't need
 
-#define EXEC_ON                             //to use exec function in menu, comment if don't need
-   #ifdef EXEC_ON
-      #define FUNC_P void (*func)()
-   #endif
+/*=============CODE OPTIMIZATION============*/
+//#define ARRAY_ON                            //to use string array in menu, comment if don't need
+
+//#define EXEC_ON                             //to use exec function in menu, comment if don't need
+#   ifdef EXEC_ON
+#      define FUNC_P void (*func)()
+#   endif
 /*=============CODE OPTIMIZATION END========*/
+
 
 /*===========CONFIG BUTTONS=================*/
 #define BTN_UP     72                       //move up in menu or increment vriable

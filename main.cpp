@@ -54,7 +54,7 @@ void main()
    int code = 0;
    while (code != 27)
    {
-   ch = getch();
+   ch = _getch();
    code = static_cast<int>(ch);
    switch(code)
       {
