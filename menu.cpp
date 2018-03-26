@@ -7,17 +7,17 @@
 using namespace std;
 using namespace value_type;
 /*TODO: 
-/добавить проверку на длину строк
+/
 /добавить возможность указать постфикс значения
-/добавить масштабируемость в зависимости от дисплея
+/
 /добавить проверки при добавлении нового элемента
 /           как меню, так и конечного (корректность родителя, отсутствие или наоборот присутствие  определенных значений)
-/выход из меню при нажатии возврат в главном меню
+/
 /
 /
 */
 
-   template <typename T>
+   template <typename T> //to convert digit value in to string
    static std::string int_to_string(T val)
    {
       std::stringstream ss;
@@ -63,7 +63,7 @@ using namespace value_type;
                break;
             }
 #endif EXEC_ON
-         default: cout<<"Nothing to do"; break;
+         //default: cout<<"Nothing to do"; break;
       }
    }
 
@@ -98,7 +98,7 @@ using namespace value_type;
             }
 #endif EXEC_ON
 
-         default: cout<<"ERROR value type"; break;
+         //default: cout<<"ERROR value type"; break;
       }
       return result;
    }
@@ -135,7 +135,7 @@ using namespace value_type;
 #ifdef EXEC_ON
          case EXEC: break;
 #endif EXEC_ON
-         default: cout<<"ERROR value type"; break;
+         //default: cout<<"ERROR value type"; break;
       }
 
       return true;
@@ -166,31 +166,43 @@ uint CAction::GetAction()
    CMenu::CMenu( const string Title, const uint Item )
    {
       memset(this, 0, sizeof(CMenu));
-      _title = Title;
-      _item = Item;
+      if (Title.length() < LCD_STR_LENGTH)
+      {
+         _title = Title;
+         _item = Item;
+      }
    }
 
    bool CMenu::addSubMenu(const string Title, const uint Parent)
    {
-      _itemCount++;
-      CMenu *subMenu = findSub(Parent);
-      if (subMenu != nullptr)
-      {
-         subMenu->addItem(Title, _itemCount);
-      }
-      else return false;
-
-      return true;
+     if (Title.length() < LCD_STR_LENGTH)
+     {
+         CMenu *subMenu = findSub(Parent);
+         if (subMenu != nullptr)
+         {
+            _itemCount++;
+            subMenu->addItem(Title, _itemCount);
+         }
+         else return false;
+     }
+     
+     else return false;
+     
+     return true;
    }
 
    bool CMenu::addItem(const std::string Title, const uint Item, bool editable, CAction *action)
    {
       CMenu *subMenu = new CMenu(Title, Item);
-      subMenu->_parent = this->_item;
-      subMenu->_editable = editable;
-      subMenu->_action = action;
-      _subMenu.push_back(subMenu);
-      return true;
+      if (subMenu != nullptr)
+      {
+         subMenu->_parent = this->_item;
+         subMenu->_editable = editable;
+         subMenu->_action = action;
+         _subMenu.push_back(subMenu);
+         return true;
+      }
+      else return false;
    }
 
   CMenu* CMenu::findSub(const uint Parent)
@@ -207,10 +219,9 @@ uint CAction::GetAction()
          }
          return nullptr;
       }
-
    }
 
-   bool CMenu::Down()
+   void CMenu::Down()
    {
       
       if (_currentMenuID + 1 <= _itemCount)
@@ -239,12 +250,9 @@ uint CAction::GetAction()
          }
 
       }
-
-      //cout<<"Menu DOWN\n";
-      return true;
    }
 
-   bool CMenu::Up()
+   void CMenu::Up()
    {
       if(_currentMenuID > 0)
       {
@@ -267,14 +275,6 @@ uint CAction::GetAction()
             CMenu *tempM = findSub(_currentMenuID);
             Draw(tempM);
       }
-      
-      //cout<<"Menu UP\n";
-      return true;
-   }
-
-   bool CMenu::GoTo() //пока не знаю зачем
-   {
-      return true;
    }
 
    void CMenu::Draw(CMenu* subMenu)
@@ -283,15 +283,14 @@ uint CAction::GetAction()
       CMenu *tempM = findSub(_currentMenuParent);
 
       cout<<tempM->_title<<"\n";
-      cout/*<<subMenu->_item<<"\t"*/<<subMenu->_title<<"  ";
+      cout<<subMenu->_title<<"  ";
       if (subMenu->_editable)
       {
          cout<<subMenu->_action->getValue();
-         //cout<<"\nEDITABLE item\n";
       }
    }
 
-   bool CMenu::Enter()
+   void CMenu::Enter()
    {
       CMenu *tempM = findSub(_currentMenuID);
       
@@ -307,7 +306,6 @@ uint CAction::GetAction()
             system("cls");
             cout<<tempM->_title<<"\n";
             cout<<"menu is empty\n";
-            return false;
          }
       }
       else //End item, not menu
@@ -317,10 +315,9 @@ uint CAction::GetAction()
 #endif
       }
       Draw(findSub(_currentMenuID));
-      return true;
    }
 
-   bool CMenu::Back()
+   void CMenu::Back()
    {
       _currentMenuID = _currentMenuParent;
       CMenu *tempM = findSub(_currentMenuID);
@@ -328,27 +325,34 @@ uint CAction::GetAction()
       _currentMenuParent = tempM->_parent;
 
       Draw(findSub(_currentMenuID));
-      return true;
    }
 
    bool CMenu::addEditableItem(const string title, const uint parent, CAction *action)
    {
-      _itemCount++;
-      CMenu *subMenu = findSub(parent);
-      if (subMenu != nullptr)
+      bool state = title.length() < LCD_STR_LENGTH;
+      if (state)
       {
-         subMenu->addItem(title, _itemCount, true, action);
+         CMenu *subMenu = findSub(parent);
+         if (subMenu != nullptr)
+         {
+            if ((subMenu->_subMenu.size() == 0) && (subMenu->_action == nullptr))
+            {
+               state = subMenu->addItem(title, _itemCount, true, action);
+               if (state) _itemCount++;
+               else return state;
+            }
+         }
+         else return false;
       }
-      else return false;
+      else return state;
 
       return true;
    }
 
-   bool CMenu::Flush(CMenu *menu) //сбрасывает меню в начальное состояние
+   void CMenu::Flush(CMenu *menu) //сбрасывает меню в начальное состояние
    {
       menu->_currentMenuID = 1;
       menu->_currentMenuParent = 0;
       CMenu *tempM = findSub(_currentMenuID);
       Draw(tempM);
-      return true;
    }

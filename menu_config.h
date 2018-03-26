@@ -12,7 +12,7 @@ typedef unsigned short int uint;
 
 
 /*=============GLOBAL VARIABLES=============*/
-#define DIGIT_INCREMENT 0.1                  //comment this
+#define DIGIT_INCREMENT 0.1                  //increment digit value in menu
 
 
 //#define ARDUINO                                   //to compile for arduino
@@ -21,6 +21,8 @@ typedef unsigned short int uint;
 #      ifdef LCD_1602
 #         define LCD_STR_LENGTH 16                    //symbols in row
 #         define LCD_NUM_ROWS   2                     //rows in display
+#      else
+           //if not 1602 lcd display
 #      endif
 
 #   define I2C_FLAG
@@ -32,6 +34,7 @@ typedef unsigned short int uint;
             #include <LiquidCrystal.h>
 #      endif
 #else                                        //compile for windows (for example)
+#   define LCD_STR_LENGTH  256
 
 #endif
 

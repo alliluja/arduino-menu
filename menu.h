@@ -4,7 +4,7 @@
 */
 #pragma once
 
-//#include <LiquidCrystal.h> //TODO: 
+
 #include <string>
 #include <vector>
 #include "menu_config.h"
@@ -57,15 +57,15 @@ class CMenu
 {
 public:
 //methods
-   CMenu( const std::string Title, const uint Item  = 0 ); //constructor //TODO: 
+   CMenu( const std::string Title, const uint Item  = 0 ); 
    bool addSubMenu(const std::string Title, const uint Parent);
    bool addEditableItem(const std::string title, const uint parent, CAction *action);
-   bool Down();
-   bool Up();
-   bool GoTo();
-   bool Enter();
-   bool Back();
-   bool Flush(CMenu *menu);
+   void Down();
+   void Up();
+   void Enter();
+   void Back();
+   void Flush(CMenu *menu);
+
 private:
 //methods
    bool addItem(const std::string Title, const uint Item, bool editable = false, CAction *action = nullptr);
