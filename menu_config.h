@@ -1,5 +1,5 @@
 /*
-====== Configuration for CMenu class ======
+ ====== Configuration for CMenu class ======
 */
 
 /*==============USING TYPES=================*/
@@ -16,6 +16,8 @@ typedef unsigned short int uint;
 
 #define LCD_STR_LENGTH 16                    //symbols in row
 #define LCD_NUM_ROWS   2                     //rows in display
+#define ON             "ON"                  //string, to show status of bool value - true
+#define OFF            "OFF"                 //string, to show status of bool value - false
 /*=============GLOBAL VARIABLES END=========*/
 
 /*=============CODE OPTIMIZATION============*/
@@ -28,8 +30,8 @@ typedef unsigned short int uint;
 /*=============CODE OPTIMIZATION END========*/
 
 /*===========CONFIG BUTTONS=================*/
-#define BTN_UP     'w'                       //move up in menu or increment vriable
-#define BTN_DOWN   's'                       //move down in menu or decrement vriable
-#define BTN_BACK   'r'                       //move back in menu or exit in parent menu
-#define BTN_ENTER  'e'                       //enter in to menu or execute function
+#define BTN_UP     72                       //move up in menu or increment vriable
+#define BTN_DOWN   80                       //move down in menu or decrement vriable
+#define BTN_BACK   8                       //move back in menu or exit in parent menu
+#define BTN_ENTER  13                       //enter in to menu or execute function
 /*===========CONFIG BUTTONS END=============*/

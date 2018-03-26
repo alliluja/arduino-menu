@@ -6,15 +6,14 @@
 
 using namespace std;
 using utils::to_string;
-
+using namespace value_type;
 /*TODO: 
-/добавить проверку на длину строк при компил€ции
-/добавить возможность указать префикс и постфикс значени€
-/фикс - ошибка при входе в пустое меню
+/добавить проверку на длину строк
+/добавить возможность указать постфикс значени€
 /добавить масштабируемость в зависимости от диспле€
-/
-/
-/
+/добавить проверки при добавлении нового элемента
+/           как меню, так и конечного (корректность родител€, отсутствие или наоборот присутствие  определенных значений)
+/выход из меню при нажатии возврат в главном меню
 /
 /
 */
@@ -66,7 +65,7 @@ using utils::to_string;
       {
          case SWITCH:
             {
-               result = (*_switch)? "ON": "OFF";
+               result = (*_switch)? ON: OFF; //defined in menu_config.h (GLOBAL VARIABLES)
                break;
             }
 
@@ -162,13 +161,6 @@ uint CAction::GetAction()
       _item = Item;
    }
 
-   //FIXME?? how it must works???
-
-   CMenu::~CMenu()
-   {
-      memset(this, 0, sizeof(CMenu));
-   }
-
    bool CMenu::addSubMenu(const string Title, const uint Parent)
    {
       _itemCount++;
@@ -261,6 +253,11 @@ uint CAction::GetAction()
             Draw(tempM);
          }
       }
+      else if (_currentMenuID == 0)
+      {
+            CMenu *tempM = findSub(_currentMenuID);
+            Draw(tempM);
+      }
       
       //cout<<"Menu UP\n";
       return true;
@@ -291,8 +288,18 @@ uint CAction::GetAction()
       
       if (!tempM->_editable) //sub Menu
       {
+         if (tempM->_subMenu.size() != 0) //menu not empty
+         {
          _currentMenuParent = _currentMenuID;
          _currentMenuID = tempM->_subMenu[0]->_item;
+         }
+         else//if menu empty
+         {
+            system("cls");
+            cout<<tempM->_title<<"\n";
+            cout<<"menu is empty\n";
+            return false;
+         }
       }
       else //End item, not menu
       {
